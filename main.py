@@ -6,8 +6,11 @@ from telegram import Bot
 import random
 import schedule
 import time
+from dotenv import load_dotenv
 
-bot_token = 'ТВОЙ_ТОКЕН'  # token
+load_dotenv()
+
+bot_token = os.getenv("BOT_TOKEN")  # token
 channel_id = '@astrocipher'  # id canala
 image_folder = "./pictures"  # Путь к папке с изображениями
 paths_img = [
@@ -47,20 +50,21 @@ async def post_horoscope():
     bot = Bot(token=bot_token)
     for znak, post, img_path in zip(znaky, proqnoz, paths_img):
         image_path = os.path.join(image_folder, img_path)
-        a = random.sample(smile, 3)  # Выбираем случайные три смайлика из списка
-        emojis = ''.join(a)  # Преобразуем список смайликов в строку
+        a = random.sample(smile, 3)
+        emojis = ''.join(a)
         if os.path.exists(image_path):
-            # Отправляем сообщение с фотографией в канал асинхронно
-            await send_message_async(bot, channel_id, f'\n *{znak}* \n• {post}\n\n{emojis}', photo=open(image_path, 'rb'))
+            await send_message_async(bot, channel_id, f'\n *{znak}* \n• {post}\n\n{emojis}',
+                                     photo=open(image_path, 'rb'))
         else:
-            # Если изображение не найдено, отправляем только текст поста
             await send_message_async(bot, channel_id, f"{post}\n\n :3")
+        await asyncio.sleep(2)
+
 
 def schedule_task():
     # Создаем асинхронный цикл
     loop = asyncio.get_event_loop()
     # Запускаем функцию в 9 утра
-    schedule.every().day.at("09:00").do(lambda: loop.run_until_complete(post_horoscope()))
+    schedule.every().day.at("00:15").do(lambda: loop.run_until_complete(post_horoscope()))
 
     while True:
         schedule.run_pending()
