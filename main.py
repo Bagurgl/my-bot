@@ -64,7 +64,7 @@ def schedule_task():
     # Создаем асинхронный цикл
     loop = asyncio.get_event_loop()
     # Запускаем функцию в 9 утра
-    schedule.every().day.at("00:15").do(lambda: loop.run_until_complete(post_horoscope()))
+    schedule.every().day.at("08:00").do(lambda: loop.run_until_complete(post_horoscope()))
 
     while True:
         schedule.run_pending()
